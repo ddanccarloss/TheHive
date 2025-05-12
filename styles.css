@@ -3,17 +3,17 @@ body {
   margin: 0;
   font-family: 'Arial', sans-serif;
   background: radial-gradient(circle, #660000 0%, #0d0d0d 70%);
-  background-size: cover;
   color: #e60000; /* Blood red text */
-  display: flex; /* Flexbox for centering */
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  height: 100vh; /* Full viewport height */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
   position: relative;
   overflow: hidden;
+  animation: color-shift 10s infinite alternate; /* Add animation to background */
 }
 
-/* Adding Noise Texture */
+/* Noise Texture Overlay */
 body::before {
   content: '';
   position: absolute;
@@ -21,23 +21,22 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: url('https://www.transparenttextures.com/patterns/noise.png'); /* Subtle noise texture */
-  opacity: 0.05; /* Adjust opacity for subtle effect */
-  pointer-events: none; /* Ensure it doesn't interfere with user interactions */
+  background: url('https://www.transparenttextures.com/patterns/noise.png');
+  opacity: 0.05;
+  pointer-events: none;
   z-index: 1;
 }
 
 /* Login Container */
 .login-container {
   text-align: center;
-  background: rgba(26, 26, 26, 0.95); /* Semi-transparent black background */
+  background: rgba(26, 26, 26, 0.95); /* Semi-transparent black */
   border: 1px solid #660000;
   box-shadow: 0 0 20px #660000;
   padding: 20px;
   width: 350px;
   border-radius: 10px;
-  transition: width 0.3s;
-  z-index: 2; /* Ensures it is above the background noise */
+  z-index: 2; 
 }
 
 /* Login Form */
@@ -52,7 +51,7 @@ body::before {
 }
 
 .login-form input {
-  width: calc(100% - 20px); /* Prevent overflow and account for padding */
+  width: calc(100% - 20px);
   padding: 10px;
   font-size: 16px;
   background-color: #0d0d0d;
@@ -61,7 +60,7 @@ body::before {
   border-radius: 5px;
   margin-bottom: 20px;
   text-shadow: 0 0 5px #ff0000;
-  box-sizing: border-box; /* Ensures padding is inside the width */
+  box-sizing: border-box;
 }
 
 .login-form input::placeholder {
@@ -91,29 +90,21 @@ body::before {
   background-color: #e60000;
 }
 
-/* Responsiveness */
-@media (max-width: 480px) {
-  .login-container {
-    width: 90%; /* Adjust container width for smaller screens */
-  }
 
-  h1 {
-    font-size: 24px; /* Reduce font size for headings */
+@keyframes color-shift {
+  0% {
+    background: radial-gradient(circle, #660000 0%, #0d0d0d 70%);
   }
-
-  .subtitle {
-    font-size: 14px; /* Reduce font size for subtitles */
+  25% {
+    background: radial-gradient(circle, #990000 0%, #1a1a1a 70%);
   }
-
-  .login-form label {
-    font-size: 16px; /* Adjust label font size */
+  50% {
+    background: radial-gradient(circle, #cc0000 0%, #0d0d0d 70%);
   }
-
-  .login-form input {
-    font-size: 14px; /* Adjust input font size */
+  75% {
+    background: radial-gradient(circle, #800000 0%, #1a1a1a 70%);
   }
-
-  .login-form button {
-    font-size: 16px; /* Adjust button font size */
+  100% {
+    background: radial-gradient(circle, #660000 0%, #0d0d0d 70%);
   }
 }
