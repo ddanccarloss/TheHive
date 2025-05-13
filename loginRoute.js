@@ -22,5 +22,16 @@ router.post('/generate', authenticate, async (req, res) => {
     }
 });
 
+
+router.get('/list', async (req, res) => {
+    try {
+        const { rows } = await pool.query('SELECT * FROM access_codes');
+        res.json(rows); // Send the access codes as a JSON response
+    } catch (err) {
+        console.error('Error listing access codes:', err);
+        res.status(500).send('Internal server error');
+    }
+});
+
 module.exports = router;
 
