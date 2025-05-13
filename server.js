@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const accessCodeRoute = require('./loginRoute'); // Access code routes
 const generateAccessCodes = require('./cronJob'); // Cron job to generate codes
+const pool = require('./memberSchema');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -33,14 +34,14 @@ const createAccessCodesTable = async () => {
             expires_at TIMESTAMP -- Optional expiration date
         );
         `;
-        await pool.query(query);
+        await pool.query(query); // Use the `pool` object to query the database
         console.log('Table "access_codes" is ready.');
     } catch (err) {
         console.error('Error creating table "access_codes":', err);
     }
 };
 
-// Call the function to create the table
+// Call this function when the server starts
 createAccessCodesTable();
 
 // Start Cron Job
