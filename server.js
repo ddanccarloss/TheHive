@@ -3,9 +3,18 @@ const path = require('path');
 const accessCodeRoute = require('./loginRoute'); // Access code routes
 const startCronJob = require('./cronJob'); // Cron job for generating/cleaning codes
 const pool = require('./memberSchema'); // PostgreSQL connection
-
+const session = require('express-session');
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+
+app.use(session({
+    secret: 'chololangsakalam',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } // Use `true` for HTTPS
+}));
+
 
 // Serve static files if needed (optional)
 app.use(express.static(path.join(__dirname)));
@@ -39,6 +48,7 @@ const createAccessCodesTable = async () => {
         console.error('Error creating table "access_codes":', err);
     }
 };
+
 
 // Call this function when the server starts
 createAccessCodesTable();
