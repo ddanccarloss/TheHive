@@ -2,6 +2,15 @@ const express = require('express');
 const pool = require('./memberSchema'); // Import the database pool
 const router = express.Router();
 
+// Middleware to handle authentication
+router.get('/check-auth', (req, res) => {
+    if (req.session?.isAuthenticated) { // Check if user is authenticated
+        res.status(200).json({ message: 'Authenticated' });
+    } else {
+        res.status(401).json({ message: 'Unauthorized' }); // Redirect unauthenticated users
+    }
+});
+
 // Generate a new access code
 router.post('/generate', async (req, res) => {
     try {
