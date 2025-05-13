@@ -33,5 +33,20 @@ router.get('/list', async (req, res) => {
     }
 });
 
+// List all access codes
+router.get('/api/access-codes/list', async (req, res) => {
+    try {
+        // Query the database to fetch all access codes
+        const { rows } = await pool.query('SELECT * FROM access_codes');
+        
+        // Send the access codes as a JSON response
+        res.json(rows);
+    } catch (err) {
+        // Handle errors
+        console.error('Error listing access codes:', err);
+        res.status(500).send('Internal server error');
+    }
+});
+
 module.exports = router;
 
