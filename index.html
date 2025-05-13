@@ -1,0 +1,58 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hive Login</title>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    
+    async function validateAccessCode(event) {
+      event.preventDefault(); 
+
+      const accessCode = document.getElementById("access-code").value; 
+      const errorMessage = document.getElementById("error-message");
+
+      
+      errorMessage.textContent = "";
+
+      try {
+       
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ accessCode })
+        });
+
+        if (response.ok) {
+          
+          window.location.href = "redroom.html";
+        } else {
+         
+          const result = await response.json();
+          errorMessage.textContent = result.message || "Invalid access code. Please try again.";
+        }
+      } catch (error) {
+     
+        errorMessage.textContent = "An error occurred while validating the access code. Please try again later.";
+        console.error("Error during access code validation:", error);
+      }
+    }
+  </script>
+</head>
+<body>
+  <div class="login-container">
+    <header class="header">
+      <h1>Welcome Member</h1>
+      <p class="subtitle">Enter your access code to proceed</p>
+    </header>
+    <main>
+      <form class="login-form" onsubmit="validateAccessCode(event)">
+        <label for="access-code">Access Code</label>
+        <input type="password" id="access-code" name="access-code" placeholder="Enter Access Code" required>
+        <button type="submit">Enter The Hive</button>
+      </form>
+      <p id="error-message" style="color: red; margin-top: 10px;"></p>
+    </main>
+  </div>
+</body>
+</html>
