@@ -11,28 +11,6 @@ const authenticate = (req, res, next) => {
     }
 };
 
-router.post('/generate', authenticate, async (req, res) => {
-    try {
-        const newCode = crypto.randomBytes(4).toString('hex');
-        const result = await pool.query('INSERT INTO access_codes (code) VALUES ($1) RETURNING *', [newCode]);
-        res.json({ message: 'Access code generated successfully', code: result.rows[0] });
-    } catch (err) {
-        console.error('Error generating access code:', err);
-        res.status(500).send('Internal server error');
-    }
-});
-
-
-router.get('/list', async (req, res) => {
-    try {
-        const { rows } = await pool.query('SELECT * FROM access_codes');
-        res.json(rows); // Send the access codes as a JSON response
-    } catch (err) {
-        console.error('Error listing access codes:', err);
-        res.status(500).send('Internal server error');
-    }
-});
-
 // List all access codes
 router.get('/api/access-codes/list', async (req, res) => {
     try {
@@ -62,4 +40,5 @@ router.post('/api/access-codes/generate', async (req, res) => {
 });
 
 module.exports = router;
+
 
