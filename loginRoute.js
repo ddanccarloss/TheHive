@@ -48,5 +48,18 @@ router.get('/api/access-codes/list', async (req, res) => {
     }
 });
 
+// Generate a new access code
+router.post('/api/access-codes/generate', async (req, res) => {
+    try {
+        const newCode = Math.random().toString(36).substring(2, 10); // Generate a random 8-character code
+        const query = 'INSERT INTO access_codes (code) VALUES ($1) RETURNING *';
+        const { rows } = await pool.query(query, [newCode]);
+        res.status(201).json(rows[0]); // Return the newly created access code
+    } catch (err) {
+        console.error('Error generating access code:', err);
+        res.status(500).send('Internal server error');
+    }
+});
+
 module.exports = router;
 
