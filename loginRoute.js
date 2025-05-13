@@ -1,46 +1,26 @@
 const express = require('express');
+const crypto = require('crypto'); // For generating random codes
 const pool = require('./memberSchema'); // PostgreSQL connection
 const router = express.Router();
-
-// Validate an access code
-router.get('/validate/:code', async (req, res) => {
-    const { code } = req.params;
-    try {
-        const { rows } = await pool.query('SELECT * FROM access_codes WHERE code = $1 AND status = $2', [code, 'active']);
-        if (rows.length === 0) {
-            return res.status(404).send('Invalid or inactive access code');
-        }
-        res.send('Access code is valid');
-    } catch (err) {
-        console.error('Error validating access code:', err);
-        res.status(500).send('Internal server error');
+const authenticate = (req, res, next) => {
+    const apiKey = req.headers['x-api-key'];
+    if (apiKey === process.env.API_KEY) {
+        next();
+    } else {
+        res.status(403).send('Unauthorized');
     }
-});
+};
 
-// Revoke an access code
-router.post('/revoke/:code', async (req, res) => {
-    const { code } = req.params;
+router.post('/generate', authenticate, async (req, res) => {
     try {
-        const result = await pool.query('UPDATE access_codes SET status = $1 WHERE code = $2', ['revoked', code]);
-        if (result.rowCount === 0) {
-            return res.status(404).send('Access code not found');
-        }
-        res.send('Access code revoked');
+        const newCode = crypto.randomBytes(4).toString('hex');
+        const result = await pool.query('INSERT INTO access_codes (code) VALUES ($1) RETURNING *', [newCode]);
+        res.json({ message: 'Access code generated successfully', code: result.rows[0] });
     } catch (err) {
-        console.error('Error revoking access code:', err);
-        res.status(500).send('Internal server error');
-    }
-});
-
-// List all active access codes
-router.get('/list', async (req, res) => {
-    try {
-        const { rows } = await pool.query('SELECT * FROM access_codes WHERE status = $1', ['active']);
-        res.json(rows);
-    } catch (err) {
-        console.error('Error listing access codes:', err);
+        console.error('Error generating access code:', err);
         res.status(500).send('Internal server error');
     }
 });
 
 module.exports = router;
+
