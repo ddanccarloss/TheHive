@@ -5,35 +5,33 @@
   <title>The Hive Login</title>
   <link rel="stylesheet" href="styles.css">
   <script>
-    
     async function validateAccessCode(event) {
       event.preventDefault(); 
 
       const accessCode = document.getElementById("access-code").value; 
       const errorMessage = document.getElementById("error-message");
 
-      
-      errorMessage.textContent = "";
+      errorMessage.textContent = ""; // Clear previous error messages
 
       try {
-       
-        const response = await fetch('/api/login', {
+        // Send the access code to the correct backend endpoint
+        const response = await fetch('/api/access-codes/validate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ accessCode })
+          body: JSON.stringify({ code: accessCode }) // Ensure the key matches your backend logic
         });
 
         if (response.ok) {
-          
+          // If validation succeeds, redirect to the redroom.html page
           window.location.href = "redroom.html";
         } else {
-         
+          // If validation fails, display the error message
           const result = await response.json();
           errorMessage.textContent = result.message || "Invalid access code. Please try again.";
         }
       } catch (error) {
-     
-        errorMessage.textContent = "ACCESS CODE INVALID!.";
+        // Handle any errors during the request
+        errorMessage.textContent = "An error occurred while validating the access code. Please try again later.";
         console.error("Error during access code validation:", error);
       }
     }
