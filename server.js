@@ -1,9 +1,8 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const path = require('path');
 const accessCodeRoute = require('./loginRoute'); // Access code routes
-const generateAccessCodes = require('./cronJob'); // Cron job to generate codes
-const pool = require('./memberSchema');
+const startCronJob = require('./cronJob'); // Cron job for generating/cleaning codes
+const pool = require('./memberSchema'); // PostgreSQL connection
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,7 +16,7 @@ app.get('/', (req, res) => {
 });
 
 // Middleware
-app.use(bodyParser.json());
+app.use(express.json()); // Use built-in JSON parsing middleware
 
 // Routes
 app.use('/api/access-codes', accessCodeRoute);
@@ -45,7 +44,7 @@ const createAccessCodesTable = async () => {
 createAccessCodesTable();
 
 // Start Cron Job
-generateAccessCodes;
+startCronJob();
 
 // Start the server
 app.listen(PORT, () => {

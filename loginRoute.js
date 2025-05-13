@@ -1,37 +1,13 @@
 const express = require('express');
-const crypto = require('crypto'); // For generating random codes
-const pool = require('./memberSchema'); // PostgreSQL connection
+const pool = require('./memberSchema'); // Import the database pool
 const router = express.Router();
-const authenticate = (req, res, next) => {
-    const apiKey = req.headers['x-api-key'];
-    if (apiKey === process.env.API_KEY) {
-        next();
-    } else {
-        res.status(403).send('Unauthorized');
-    }
-};
 
-// List all access codes
-router.get('/api/access-codes/list', async (req, res) => {
+// Generate a new access code
+router.post('/generate', async (req, res) => {
     try {
-        // Query the database to fetch all access codes
-        const { rows } = await pool.query('SELECT * FROM access_codes');
-        
-        // Send the access codes as a JSON response
-        res.json(rows);
-    } catch (err) {
-        // Handle errors
-        console.error('Error listing access codes:', err);
-        res.status(500).send('Internal server error');
-    }
-});
-
-// Generate a new access code with expiration
-router.post('/api/access-codes/generate', async (req, res) => {
-    try {
-        const newCode = Math.random().toString(36).substring(2, 10); // Generate a random 8-character code
+        const newCode = Math.random().toString(36).substring(2, 10); // Generate random code
         const expiresAt = new Date();
-        expiresAt.setHours(expiresAt.getHours() + 24); // Add 24 hours to the current time
+        expiresAt.setHours(expiresAt.getHours() + 24); // Set expiration to 24 hours from now
 
         const query = `
             INSERT INTO access_codes (code, expires_at) 
@@ -39,7 +15,7 @@ router.post('/api/access-codes/generate', async (req, res) => {
             RETURNING *`;
         const { rows } = await pool.query(query, [newCode, expiresAt]);
 
-        res.status(201).json(rows[0]); // Return the newly created access code
+        res.status(201).json(rows[0]);
     } catch (err) {
         console.error('Error generating access code:', err);
         res.status(500).send('Internal server error');
@@ -47,7 +23,7 @@ router.post('/api/access-codes/generate', async (req, res) => {
 });
 
 // Validate an access code
-router.post('/api/access-codes/validate', async (req, res) => {
+router.post('/validate', async (req, res) => {
     const { code } = req.body;
 
     try {
@@ -70,5 +46,3 @@ router.post('/api/access-codes/validate', async (req, res) => {
 });
 
 module.exports = router;
-
-
