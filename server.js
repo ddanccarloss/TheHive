@@ -21,6 +21,28 @@ app.use(bodyParser.json());
 // Routes
 app.use('/api/access-codes', accessCodeRoute);
 
+// Function to create the "access_codes" table if it doesn't exist
+const createAccessCodesTable = async () => {
+    try {
+        const query = `
+        CREATE TABLE IF NOT EXISTS access_codes (
+            id SERIAL PRIMARY KEY,
+            code VARCHAR(255) UNIQUE NOT NULL,
+            status VARCHAR(50) DEFAULT 'active', -- Possible values: active, revoked, expired
+            created_at TIMESTAMP DEFAULT NOW(),
+            expires_at TIMESTAMP -- Optional expiration date
+        );
+        `;
+        await pool.query(query);
+        console.log('Table "access_codes" is ready.');
+    } catch (err) {
+        console.error('Error creating table "access_codes":', err);
+    }
+};
+
+// Call the function to create the table
+createAccessCodesTable();
+
 // Start Cron Job
 generateAccessCodes;
 
