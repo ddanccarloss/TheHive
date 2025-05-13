@@ -1,29 +1,17 @@
-const cron = require('node-cron');
-const Member = require('./memberSchema');
-const generateAccessCode = require('./generateAccessCode');
-const sendEmail = require('./sendEmail');
+const pool = require('./memberSchema'); // PostgreSQL connection
+const crypto = require('crypto'); // For generating random access codes
 
-// Schedule the cron job to run every 24 hours
-cron.schedule('0 0 * * *', async () => {
-  try {
-    const members = await Member.find();
-
-    for (const member of members) {
-      const newAccessCode = generateAccessCode();
-      const newExpiration = new Date();
-      newExpiration.setDate(newExpiration.getDate() + 1); // Set expiration to 24 hours
-
-      // Update member record
-      member.accessCode = newAccessCode;
-      member.expiresAt = newExpiration;
-      await member.save();
-
-      // Send the new access code via email
-      await sendEmail(member.email, 'Your New Access Code', `Your new access code is: ${newAccessCode}`);
+const generateAccessCodes = async () => {
+    try {
+        const newCode = crypto.randomBytes(4).toString('hex'); // Generate a 4-byte random code
+        await pool.query('INSERT INTO access_codes (code) VALUES ($1)', [newCode]);
+        console.log(`Generated new access code: ${newCode}`);
+    } catch (err) {
+        console.error('Error generating access code:', err);
     }
+};
 
-    console.log('Access codes regenerated and emails sent');
-  } catch (error) {
-    console.error('Error regenerating access codes:', error);
-  }
-});
+// Run the cron job (e.g., every hour)
+setInterval(generateAccessCodes, 3600000); // 1 hour = 3600000 ms
+
+module.exports = generateAccessCodes;

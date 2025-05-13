@@ -6,11 +6,10 @@
     "joi": "^17.13.3",
     "mongoose": "^8.14.2",
     "node-cron": "^4.0.4",
-    "nodemailer": "^7.0.3"
+    "nodemailer": "^7.0.3",
+    "pg": "^8.16.0"
   },
-  
   "scripts": {
     "start": "node server.js"
   }
 }
-

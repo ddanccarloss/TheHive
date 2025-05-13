@@ -1,25 +1,46 @@
 const express = require('express');
-const Member = require('./memberSchema');
+const pool = require('./memberSchema'); // PostgreSQL connection
 const router = express.Router();
 
-router.post('/login', async (req, res) => {
-  const { accessCode } = req.body;
-
-  try {
-    const member = await Member.findOne({ accessCode });
-
-    if (!member) {
-      return res.status(401).json({ message: 'Invalid access code' });
+// Validate an access code
+router.get('/validate/:code', async (req, res) => {
+    const { code } = req.params;
+    try {
+        const { rows } = await pool.query('SELECT * FROM access_codes WHERE code = $1 AND status = $2', [code, 'active']);
+        if (rows.length === 0) {
+            return res.status(404).send('Invalid or inactive access code');
+        }
+        res.send('Access code is valid');
+    } catch (err) {
+        console.error('Error validating access code:', err);
+        res.status(500).send('Internal server error');
     }
+});
 
-    if (new Date() > member.expiresAt) {
-      return res.status(401).json({ message: 'Access code expired' });
+// Revoke an access code
+router.post('/revoke/:code', async (req, res) => {
+    const { code } = req.params;
+    try {
+        const result = await pool.query('UPDATE access_codes SET status = $1 WHERE code = $2', ['revoked', code]);
+        if (result.rowCount === 0) {
+            return res.status(404).send('Access code not found');
+        }
+        res.send('Access code revoked');
+    } catch (err) {
+        console.error('Error revoking access code:', err);
+        res.status(500).send('Internal server error');
     }
+});
 
-    res.status(200).json({ message: 'Login successful' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
+// List all active access codes
+router.get('/list', async (req, res) => {
+    try {
+        const { rows } = await pool.query('SELECT * FROM access_codes WHERE status = $1', ['active']);
+        res.json(rows);
+    } catch (err) {
+        console.error('Error listing access codes:', err);
+        res.status(500).send('Internal server error');
+    }
 });
 
 module.exports = router;
