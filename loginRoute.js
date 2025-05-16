@@ -4,10 +4,10 @@ const router = express.Router();
 
 // Middleware to handle authentication
 router.get('/check-auth', (req, res) => {
-    if (req.session?.isAuthenticated) { // Check if user is authenticated
+    if (req.session?.isAuthenticated) {
         res.status(200).json({ message: 'Authenticated' });
     } else {
-        res.status(401).json({ message: 'Unauthorized' }); // Redirect unauthenticated users
+        res.status(401).json({ message: 'Unauthorized' });
     }
 });
 
