@@ -14,23 +14,19 @@
       errorMessage.textContent = ""; // Clear previous error messages
 
       try {
-        // Send the access code to the correct backend endpoint
         const response = await fetch('/api/access-codes/validate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: accessCode }) // Ensure the key matches your backend logic
+          body: JSON.stringify({ code: accessCode }) 
         });
 
         if (response.ok) {
-          // If validation succeeds, redirect to the redroom.html page
           window.location.href = "redroom.html";
         } else {
-          // If validation fails, display the error message
           const result = await response.json();
           errorMessage.textContent = result.message || "Invalid access code. Please try again.";
         }
       } catch (error) {
-        // Handle any errors during the request
         errorMessage.textContent = "An error occurred while validating the access code. Please try again later.";
         console.error("Error during access code validation:", error);
       }
