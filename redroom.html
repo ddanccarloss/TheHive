@@ -6,10 +6,10 @@
   <link rel="stylesheet" href="redroom.css">
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      
+      // Check authentication
       fetch('/api/check-auth')
         .then(response => {
-          console.log('Authentication Check Response:', response); 
+          console.log('Authentication Check Response:', response); // Debug response
           if (!response.ok) {
             console.log('User not authenticated. Redirecting to login page.');
             window.location.href = "index.html";
