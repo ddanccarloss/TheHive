@@ -7,103 +7,31 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       // Check authentication
-      fetch('/api/check-auth')
-        .then(response => {
-          console.log('Authentication Check Response:', response); // Debug response
-          if (!response.ok) {
-            console.log('User not authenticated. Redirecting to login page.');
-            window.location.href = "index.html";
-          }
-        })
-        .catch(error => {
-          console.error("Error checking authentication:", error);
-          window.location.href = "index.html"; 
-        });
+      fetch('/api/check-auth', {
+        method: 'GET',
+        credentials: 'include' // Ensure cookies are sent with the request
+      })
+      .then(response => {
+        console.log('Authentication Check Response:', response); // Debug response
+        if (!response.ok) {
+          console.log('User not authenticated. Redirecting to login page.');
+          window.location.href = "index.html"; // Redirect to login page
+        }
+      })
+      .catch(error => {
+        console.error("Error checking authentication:", error);
+        window.location.href = "index.html"; // Redirect to login page
+      });
     });
-
-  // Other existing behaviors
-  const tortureOptions = document.getElementById("torture-options");
-  const amountField = document.getElementById("amount");
-  const otherRequestField = document.getElementById("other-request-field");
-  const executeButton = document.querySelector(".execute-button");
-  const errorMessageContainer = document.createElement("div");
-
-  const prices = {
-    "kuryentehin-ribs": 10000,
-    "alisan-ng-kuko-sa-kamay": 20000,
-    "alisan-ng-kuko-sa-paa": 20000,
-    "pasuin-ng-kandila": 5000,
-    "putulan-ng-isang-daliri-sa-kamay": 50000,
-    "putulan-ng-isang-daliri-sa-paa": 50000,
-    "putulin-ang-dila": 100000,
-    "alisan-ng-isang-pilikmata": 15000,
-    "gupitin-ang-tenga": 25000,
-    "bulagin-ang-isang-mata": 75000,
-    "barilin-sa-ulo": 30000,
-    "buklatin-ang-tiyan": 50000,
-    "other-request": 500000,
-  };
-
-  // Update the amount field based on selected option
-  tortureOptions.addEventListener("change", function () {
-    const selectedOption = tortureOptions.value;
-
-    // Clear any existing error messages
-    const existingErrorMessage = document.querySelector(".error-message");
-    if (existingErrorMessage) {
-      existingErrorMessage.remove();
-    }
-
-    // Update amount field and toggle custom request field
-    if (selectedOption === "other-request") {
-      amountField.value = `₱${prices["other-request"].toLocaleString()}`; 
-      otherRequestField.style.display = "block"; 
-    } else if (prices[selectedOption]) {
-      amountField.value = `₱${prices[selectedOption].toLocaleString()}`; 
-      otherRequestField.style.display = "none"; 
-    } else {
-      amountField.value = ""; 
-      otherRequestField.style.display = "none"; 
-    }
-  });
-
-  // Handle the execute button click
-  executeButton.addEventListener("click", function (event) {
-    event.preventDefault(); 
-    errorMessageContainer.textContent =
-      "Error: There is no livestream on-going. Check your email for schedules.";
-    errorMessageContainer.style.color = "red";
-    errorMessageContainer.style.marginTop = "20px";
-    errorMessageContainer.style.fontWeight = "bold";
-
-    // Append error message below the form if not already present
-    if (!document.querySelector(".error-message")) {
-      errorMessageContainer.classList.add("error-message");
-      executeButton.parentElement.appendChild(errorMessageContainer);
-    }
-  });
-});
   </script>
 </head>
 <body>
   <div class="container">
-    <!-- Live Stream Section -->
-    <div class="live-stream">
-      <h2>Live Stream</h2>
-      <div class="stream">
-        <video id="live-video" controls autoplay>
-          <source src="https://your-live-stream-source.com/stream.m3u8" type="application/x-mpegURL">
-          Your browser does not support the video tag.
-        </video>
-      </div>
-    </div>
-
-    <!-- Control Panel Section -->
-    <div class="control-panel">
-      <h2>Control Panel</h2>
-      <form class="torture-form">
-        <label for="torture-options">Select Torture Option:</label>
-        <select id="torture-options" name="torture-options" required>
+    <h2>Welcome to the Red Room</h2>
+    <!-- Add other content here -->
+    <form class="torture-form">
+      <label for="torture-options">Select Torture Option:</label>
+      <select id="torture-options" name="torture-options" required>
           <option value="" disabled selected>Pumili dito</option>
           <option value="kuryentehin-ribs">Kuryentehin (Ribs)</option>
           <option value="alisan-ng-kuko-sa-kamay">Alisan ng kuko sa kamay</option>
@@ -120,19 +48,56 @@
           <option value="other-request">Other Request</option>
         </select>
 
-        <!-- Amount Field -->
-        <label for="amount">Torture Amount:</label>
-        <input type="text" id="amount" name="amount" placeholder="Amount will appear here" disabled>
+      <label for="amount">Torture Amount:</label>
+      <input type="text" id="amount" name="amount" placeholder="Amount will appear here" disabled>
 
-        <!-- Other Request Field (Hidden by Default) -->
-        <div id="other-request-field" style="display: none; margin-top: 20px;">
-          <label for="custom-request">Enter Your Custom Request:</label>
-          <input type="text" id="custom-request" name="custom-request" placeholder="Type your request here">
-        </div>
+      <div id="other-request-field" style="display: none; margin-top: 20px;">
+        <label for="custom-request">Enter Your Custom Request:</label>
+        <input type="text" id="custom-request" name="custom-request" placeholder="Type your request here">
+      </div>
 
-        <button type="submit" class="execute-button">EXECUTE</button>
-      </form>
-    </div>
+      <button type="submit" class="execute-button">EXECUTE</button>
+    </form>
   </div>
 </body>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const tortureOptions = document.getElementById("torture-options");
+    const amountField = document.getElementById("amount");
+    const otherRequestField = document.getElementById("other-request-field");
+
+    // Prices for torture options
+    const prices = {
+      "kuryentehin-ribs": 10000,
+    "alisan-ng-kuko-sa-kamay": 20000,
+    "alisan-ng-kuko-sa-paa": 20000,
+    "pasuin-ng-kandila": 5000,
+    "putulan-ng-isang-daliri-sa-kamay": 50000,
+    "putulan-ng-isang-daliri-sa-paa": 50000,
+    "putulin-ang-dila": 100000,
+    "alisan-ng-isang-pilikmata": 15000,
+    "gupitin-ang-tenga": 25000,
+    "bulagin-ang-isang-mata": 75000,
+    "barilin-sa-ulo": 30000,
+    "buklatin-ang-tiyan": 50000,
+    "other-request": 500000,
+    };
+
+    // Update the amount field based on selected option
+    tortureOptions.addEventListener("change", function () {
+      const selectedOption = tortureOptions.value;
+
+      if (selectedOption === "other-request") {
+        amountField.value = `₱${prices["other-request"].toLocaleString()}`; 
+        otherRequestField.style.display = "block"; 
+      } else if (prices[selectedOption]) {
+        amountField.value = `₱${prices[selectedOption].toLocaleString()}`; 
+        otherRequestField.style.display = "none"; 
+      } else {
+        amountField.value = ""; 
+        otherRequestField.style.display = "none"; 
+      }
+    });
+  });
+</script>
 </html>
