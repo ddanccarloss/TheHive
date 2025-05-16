@@ -12,7 +12,7 @@ app.use(session({
     secret: 'chololangsakalam',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // Use `true` for HTTPS
+    cookie: { secure: process.env.NODE_ENV === 'production' } // Use secure cookies in production
 }));
 
 
