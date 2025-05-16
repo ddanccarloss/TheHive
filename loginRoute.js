@@ -24,34 +24,12 @@ router.post('/generate', async (req, res) => {
             RETURNING *`;
         const { rows } = await pool.query(query, [newCode, expiresAt]);
 
+        // Set authentication in the session
         req.session.isAuthenticated = true;
-        
+
         res.status(201).json(rows[0]);
     } catch (err) {
         console.error('Error generating access code:', err);
-        res.status(500).send('Internal server error');
-    }
-});
-
-// Validate an access code
-router.post('/validate', async (req, res) => {
-    const { code } = req.body;
-
-    try {
-        const query = `
-            SELECT * 
-            FROM access_codes 
-            WHERE code = $1 AND (expires_at IS NULL OR expires_at > NOW())`;
-
-        const { rows } = await pool.query(query, [code]);
-
-        if (rows.length === 0) {
-            return res.status(400).json({ message: 'Invalid or expired access code' });
-        }
-
-        res.status(200).json({ message: 'Access code is valid', code: rows[0] });
-    } catch (err) {
-        console.error('Error validating access code:', err);
         res.status(500).send('Internal server error');
     }
 });
