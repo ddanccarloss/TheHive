@@ -8,25 +8,29 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(session({
-    secret: 'chololangsakalam',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: process.env.NODE_ENV === 'production' } // Use secure cookies in production
+    secret: 'chololangsakalam', // Ensure strong secret
+    resave: false,              // Prevent unnecessary session saving
+    saveUninitialized: true,    // Save sessions even if not modified
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Secure cookies in production
+        httpOnly: true,         // Prevent JavaScript access to cookies
+        maxAge: 24 * 60 * 60 * 1000 // Session cookie expires in 24 hours
+    }
 }));
 
-// Serve static files if needed (optional)
+// Serve static files
 app.use(express.static(path.join(__dirname)));
-
-// Route for the root endpoint
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html')); // Ensure index.html exists in the same directory
-});
 
 // Middleware
 app.use(express.json()); // Use built-in JSON parsing middleware
 
 // Routes
 app.use('/api/access-codes', accessCodeRoute);
+
+// Route for the root endpoint
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Function to create the "access_codes" table if it doesn't exist
 const createAccessCodesTable = async () => {
@@ -40,7 +44,7 @@ const createAccessCodesTable = async () => {
             expires_at TIMESTAMP -- Optional expiration date
         );
         `;
-        await pool.query(query); // Use the `pool` object to query the database
+        await pool.query(query);
         console.log('Table "access_codes" is ready.');
     } catch (err) {
         console.error('Error creating table "access_codes":', err);
