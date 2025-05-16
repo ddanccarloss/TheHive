@@ -27,18 +27,9 @@
       // Prices for torture options
       const prices = {
         "kuryentehin-ribs": 10000,
-    "alisan-ng-kuko-sa-kamay": 20000,
-    "alisan-ng-kuko-sa-paa": 20000,
-    "pasuin-ng-kandila": 5000,
-    "putulan-ng-isang-daliri-sa-kamay": 50000,
-    "putulan-ng-isang-daliri-sa-paa": 50000,
-    "putulin-ang-dila": 100000,
-    "alisan-ng-isang-pilikmata": 15000,
-    "gupitin-ang-tenga": 25000,
-    "bulagin-ang-isang-mata": 75000,
-    "barilin-sa-ulo": 30000,
-    "buklatin-ang-tiyan": 50000,
-    "other-request": 500000,
+        "alisan-ng-kuko-sa-kamay": 20000,
+        "alisan-ng-kuko-sa-paa": 20000,
+        "other-request": 500000,
       };
 
       // Update the amount field based on selected option
@@ -65,20 +56,11 @@
     <form class="torture-form">
       <label for="torture-options">Select Torture Option:</label>
       <select id="torture-options" name="torture-options" required>
-        <option value="" disabled selected>Pumili dito</option>
-          <option value="kuryentehin-ribs">Kuryentehin (Ribs)</option>
-          <option value="alisan-ng-kuko-sa-kamay">Alisan ng kuko sa kamay</option>
-          <option value="alisan-ng-kuko-sa-paa">Alisan ng kuko sa paa</option>
-          <option value="pasuin-ng-kandila">Pasuin ng kandila</option>
-          <option value="putulan-ng-isang-daliri-sa-kamay">Putulan ng isang daliri sa kamay</option>
-          <option value="putulan-ng-isang-daliri-sa-paa">Putulan ng isang daliri sa paa</option>
-          <option value="putulin-ang-dila">Putulin ang dila</option>
-          <option value="alisan-ng-isang-pilikmata">Alisan ng isang pilikmata</option>
-          <option value="gupitin-ang-tenga">Gupitin ang tenga</option>
-          <option value="bulagin-ang-isang-mata">Bulagin ang isang mata</option>
-          <option value="barilin-sa-ulo">Barilin sa ulo</option>
-          <option value="buklatin-ang-tiyan">Buklatin ang tiyan</option>
-          <option value="other-request">Other Request</option>
+        <option value="" disabled selected>Select an option</option>
+        <option value="kuryentehin-ribs">Kuryentehin (Ribs)</option>
+        <option value="alisan-ng-kuko-sa-kamay">Alisan ng kuko sa kamay</option>
+        <option value="alisan-ng-kuko-sa-paa">Alisan ng kuko sa paa</option>
+        <option value="other-request">Other Request</option>
       </select>
 
       <label for="amount">Torture Amount:</label>
