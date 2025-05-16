@@ -6,25 +6,25 @@
   <link rel="stylesheet" href="redroom.css">
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      // Check authentication
       fetch('/api/check-auth', {
         method: 'GET',
         credentials: 'include' // Ensure cookies are sent with the request
       })
       .then(response => {
+        console.log('Authentication Check Response:', response.status);
         if (!response.ok) {
-          window.location.href = "index.html"; // Redirect to login page
+          window.location.href = "index.html";
         }
       })
       .catch(error => {
-        window.location.href = "index.html"; // Redirect to login page
+        console.error("Error checking authentication:", error);
+        window.location.href = "index.html";
       });
 
       const tortureOptions = document.getElementById("torture-options");
       const amountField = document.getElementById("amount");
       const otherRequestField = document.getElementById("other-request-field");
 
-      // Prices for torture options
       const prices = {
         "kuryentehin-ribs": 10000,
         "alisan-ng-kuko-sa-kamay": 20000,
@@ -32,7 +32,6 @@
         "other-request": 500000,
       };
 
-      // Update the amount field based on selected option
       tortureOptions.addEventListener("change", function () {
         const selectedOption = tortureOptions.value;
 
@@ -56,8 +55,8 @@
     <form class="torture-form">
       <label for="torture-options">Select Torture Option:</label>
       <select id="torture-options" name="torture-options" required>
-        <option value="" disabled selected>Select an option</option>
-        <option value="kuryentehin-ribs">Kuryentehin (Ribs)</option>
+        <option value="" disabled selected>Pumili dito</option>
+        <option value="kuryentehin-ribs">Kuryentehin ang ribs</option>
         <option value="alisan-ng-kuko-sa-kamay">Alisan ng kuko sa kamay</option>
         <option value="alisan-ng-kuko-sa-paa">Alisan ng kuko sa paa</option>
         <option value="other-request">Other Request</option>
