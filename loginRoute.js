@@ -24,6 +24,8 @@ router.post('/generate', async (req, res) => {
             RETURNING *`;
         const { rows } = await pool.query(query, [newCode, expiresAt]);
 
+        req.session.isAuthenticated = true;
+        
         res.status(201).json(rows[0]);
     } catch (err) {
         console.error('Error generating access code:', err);
