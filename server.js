@@ -7,14 +7,12 @@ const session = require('express-session');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
 app.use(session({
     secret: 'chololangsakalam',
     resave: false,
     saveUninitialized: true,
     cookie: { secure: process.env.NODE_ENV === 'production' } // Use secure cookies in production
 }));
-
 
 // Serve static files if needed (optional)
 app.use(express.static(path.join(__dirname)));
@@ -48,7 +46,6 @@ const createAccessCodesTable = async () => {
         console.error('Error creating table "access_codes":', err);
     }
 };
-
 
 // Call this function when the server starts
 createAccessCodesTable();
